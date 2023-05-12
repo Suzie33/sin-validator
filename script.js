@@ -23,16 +23,6 @@ sinForm.addEventListener('submit', (event) => {
   console.log(validateSin(sinValue));
 });
 
-const validateSin = (sinNumber) => {
-  let isValid = true;
-
-  if (!isLengthValid(sinNumber, SIN_LENGTH)) {
-    isValid = false;
-  }
-
-  return isValid;
-}
-
 //Validation Rules
 const isLengthValid = (stringToCheck, desiredLength) => {
   if (stringToCheck.length === desiredLength) {
@@ -41,6 +31,44 @@ const isLengthValid = (stringToCheck, desiredLength) => {
 
   return false;
 };
+
+const isMultiplyRuleValid = (sin) => {
+  // Convert sin string to array and multiply every 2nd digit by 2 
+  const multipliedSinArr = sin.split('').map((elem, ind) => {
+     if (isEven(ind)) {
+      return (Number(elem) * 2).toString();
+    }
+    return elem;
+  });
+
+  multipliedSinArr.forEach((elem, ind) => {
+    if (elem.length > 1) {
+      multipliedSinArr.splice(ind, 1, ...elem.split(''));
+    }
+  })
+  
+  const multipliedSinSum = multipliedSinArr.reduce((acc, curr) => {
+    acc += Number(curr);
+    return acc;
+  }, 0);
+  
+  const isSumDevidableByTen = multipliedSinSum % 10 === 0;
+  return isSumDevidableByTen;
+};
+
+//Validate
+const validateSin = (sinNumber) => {
+  let isValid = true;
+
+  if (!isLengthValid(sinNumber, SIN_LENGTH)) {
+    isValid = false;
+  }
+  if (!isMultiplyRuleValid(sinNumber)) {
+    isValid = false;
+  }
+
+  return isValid;
+}
 
 //Print Result
 const showResult = (isValid) => {
