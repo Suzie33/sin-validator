@@ -1,11 +1,14 @@
-import { SIN_LENGTH } from "./constants.js";
 import { isEven } from "./helpers.js";
 
 // Double-check that all the characters of the input are digits.
-const isNumber = (char) => isNaN(char) === false;
+const containsOnlyDigits = (str) => {
+  return /^[0-9]+$/.test(str);
+};
 
 // Validation Rules
-const isLengthValid = (stringToCheck, desiredLength) => {
+const isLengthValid = (stringToCheck) => {
+  const desiredLength = 9;
+
   if (stringToCheck.length === desiredLength) {
     return true;
   }
@@ -39,20 +42,11 @@ const isMultiplyRuleValid = (sinStr) => {
   return isSumDevidableByTen;
 };
 
+// Add all desired validation rules to the array
+export const validationRules = [containsOnlyDigits, isLengthValid, isMultiplyRuleValid];
+
 // Validate
-export const validateSin = (sinNumber) => {
-  let isValid = true;
-
-  // check with as many validation rules as needed
-  if (!isNumber(sinNumber)) {
-    isValid = false;
-  }
-  if (!isLengthValid(sinNumber, SIN_LENGTH)) {
-    isValid = false;
-  }
-  if (!isMultiplyRuleValid(sinNumber)) {
-    isValid = false;
-  }
-
-  return isValid;
+export const validateSin = (sinString, rules) => {
+  // check if all the validation rules return true
+  return rules.every((rule) => rule(sinString) === true);
 };
